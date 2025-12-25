@@ -1,0 +1,38 @@
+name: Build DM17 Firmware
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'app/boards/shields/dm17/**'  # 当dm17配置文件变化时触发
+  workflow_dispatch:  # 允许手动在GitHub页面点击运行
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: docker.io/zmkfirmware/zmk-build-arm:4.1
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Zephyr Environment
+        run: |
+          west init -l app
+          west update --fetch-opt=--filter=tree:0
+          west zephyr-export
+
+      - name: Build Firmware
+        run: |
+          # 请根据你的主控板型号修改 -b 后的参数，例如 nice_nano_v2
+          west build -s app -p -b nrfmicro_13_52840 -- -DSHIELD=dm17
+
+      - name: Upload Firmware Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dm17-firmware
+          path: |
+            app/build/zephyr/zmk.uf2
+            app/build/zephyr/zmk.hex
+          retention-days: 7
