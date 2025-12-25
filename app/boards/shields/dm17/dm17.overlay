@@ -42,5 +42,10 @@
             label = "Backlight LED";
         };
     };
+/* 在文件末尾， backlight_led_strip 节点附近添加以下内容 */
+&pwm0 {
+    status = "okay";
+    // 对于nRF52840，可能需要指定通道和引脚映射，但先尝试默认
+};
 };
 
