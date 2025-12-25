@@ -26,7 +26,7 @@ jobs:
       - name: Build Firmware
         run: |
           # 请根据你的主控板型号修改 -b 后的参数，例如 nice_nano_v2
-          west build -s app -p -b nrf52840dk/nrf52840 -- -DSHIELD=dm17
+          west build -s app -p -b nrf52840dk -- -DSHIELD=dm17
 
       - name: Upload Firmware Artifact
         uses: actions/upload-artifact@v4
