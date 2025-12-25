@@ -1,7 +1,7 @@
 # Copyright (c) 2020 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
-if SHIELD_dm17
+if SHIELD_czm17
 
 config ZMK_KEYBOARD_NAME
 	default "czm17"
