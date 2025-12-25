@@ -2,7 +2,7 @@ file_format: "1"
 id: dm17
 name: dm17
 type: shield
-url: 
+url: https://maiku.taobao.com/
 requires: [nrfmicro_13_52840]
 features:
   - keys
