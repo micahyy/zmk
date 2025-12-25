@@ -1,5 +1,4 @@
- {
-    compatible = "zmk,keyboard-shield";
+/ {
 
     chosen {
         zmk,kscan = &kscan0;
