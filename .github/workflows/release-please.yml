@@ -23,7 +23,7 @@ jobs:
       - uses: googleapis/release-please-action@v4
         id: release
         with:
-          token: ${{ secrets.ZMK_RELEASE_PLEASE_TOKEN }}
+          token: ${{ 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.ZMK_RELEASE_PLEASE_TOKEN }}
           target-branch: ${{ github.ref_name }}
 
   release-new-version:
