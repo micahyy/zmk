@@ -4,8 +4,8 @@ on:
   push:
     branches: [main]
     paths:
-+      - "app/boards/shields/dm17/**" 
-+  workflow_dispatch: 
+      - 'app/boards/shields/dm17/**'  # 当dm17配置文件变化时触发
+  workflow_dispatch:  # 允许手动在GitHub页面点击运行
 
 jobs:
   build:
