@@ -34,12 +34,13 @@
             RC(4,0) RC(4,2)
         >;
     };
-};
     backlight_led_strip: backlight_led_strip {
         compatible = "pwm-leds";
         label = "Backlight LED Strip";
-        backlight_led_0 {
-            pwms = <&pwm0 3 PWM_MSEC(17) PWM_POLARITY_NORMAL>; // 示例引脚，必须修改！
+        led_0 {
+            pwms = <&pwm0 3 PWM_MSEC(20) PWM_POLARITY_NORMAL>;
             label = "Backlight LED";
         };
     };
+};
+
