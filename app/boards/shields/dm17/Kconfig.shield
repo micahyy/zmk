@@ -2,4 +2,4 @@
 # SPDX-License-Identifier: MITd
 
 config SHIELD_dm17
-def_bool $(shields_list_contains,czm17)
+def_bool $(shields_list_contains,dm17)
