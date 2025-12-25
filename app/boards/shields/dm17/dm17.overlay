@@ -1,4 +1,4 @@
-/ {
+ {
     compatible = "zmk,keyboard-shield";
 
     chosen {
