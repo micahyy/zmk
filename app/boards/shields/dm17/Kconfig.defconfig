@@ -4,6 +4,6 @@
 if SHIELD_dm17
 
 config ZMK_KEYBOARD_NAME
-	default "CZM17"
+	default "czm17"
 
 endif
