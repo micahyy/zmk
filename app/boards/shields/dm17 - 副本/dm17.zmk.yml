@@ -1,9 +1,0 @@
-file_format: "1"
-id: dm17
-name: CaiZiMao dm17
-type: shield
-url: 
-requires: [makerdiary_nrf52840_m2]
-features:
-  - keys
-  - studio
