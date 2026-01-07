@@ -1,7 +1,7 @@
 /*t
  * Copyright (c) 2020 The ZMK Contributors
  *
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: MIT TEST
  */
 
 #include <dt-bindings/zmk/matrix_transform.h>

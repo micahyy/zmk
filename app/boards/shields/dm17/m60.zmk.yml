@@ -1,8 +1,8 @@
 file_format: "1"
-id: dm17
-name: CaiZiMao dm17
+id: m60
+name: MakerDiary m60
 type: shield
-url: 
+url: https://makerdiary.com/pages/m60-mechanical-keyboard
 requires: [makerdiary_nrf52840_m2]
 features:
   - keys
