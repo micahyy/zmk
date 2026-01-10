@@ -1,7 +1,4 @@
-
-
 #include <dt-bindings/zmk/matrix_transform.h>
-
 #include <layouts/common/60percent/ansi.dtsi>
 
 / {
@@ -14,28 +11,22 @@
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-matrix";
         wakeup-source;
-
         diode-direction = "col2row";
-        row-gpios
-            = <&gpio0 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            , <&gpio0 30 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            , <&gpio0 31 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            , <&gpio0 29 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            , <&gpio0 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            ;
-        col-gpios
-            = <&gpio0 5 GPIO_ACTIVE_HIGH>
-            , <&gpio0 13 GPIO_ACTIVE_HIGH>
-            , <&gpio0 24 GPIO_ACTIVE_HIGH>
-            , <&gpio0 9 GPIO_ACTIVE_HIGH>
-            ;
+        row-gpios = <&gpio0 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,
+                   <&gpio0 30 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,
+                   <&gpio0 31 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,
+                   <&gpio0 29 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,
+                   <&gpio0 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
+        col-gpios = <&gpio0 5 GPIO_ACTIVE_HIGH>,
+                   <&gpio0 13 GPIO_ACTIVE_HIGH>,
+                   <&gpio0 24 GPIO_ACTIVE_HIGH>,
+                   <&gpio0 9 GPIO_ACTIVE_HIGH>;
     };
 
     default_transform: keymap_transform_0 {
         compatible = "zmk,matrix-transform";
         columns = <4>;
         rows = <5>;
-
         map = <
 RC(0,0)  RC(0,1) RC(0,2) RC(0,3)
 RC(1,0)  RC(1,1) RC(1,2) RC(1,3)
@@ -44,32 +35,21 @@ RC(3,0)  RC(3,1) RC(3,2) RC(3,3)
 RC(4,0)          RC(4,2)
         >;
     };
-};
 
     led_strip: led_strip {
         compatible = "worldsemi,ws2812-spi";
         label = "WS2812";
-        
-        // P0.03 作为 MOSI
         spi-mosi-pin = <&gpio0 3 0>;
-        
-        // SPI 频率（WS2812 通常需要 4MHz）
         spi-max-frequency = <4000000>;
-        
-        // 17个按键
         chain-length = <17>;
-        
-        // RGB 颜色顺序（根据你的 LED 型号调整）
         color-mapping = <LED_COLOR_ID_GREEN
                          LED_COLOR_ID_RED
                          LED_COLOR_ID_BLUE>;
-        
-        // WS2812 的 0 和 1 的 SPI 帧
         spi-one-frame = <0x70>;
         spi-zero-frame = <0x40>;
+    };
+};
 
 &layout_60_ansi {
     transform = <&default_transform>;
 };
-
-
