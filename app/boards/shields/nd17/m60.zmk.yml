@@ -1,8 +1,8 @@
 file_format: "1"
-id: m60
-name: caizimao d17
+id: nd17
+name: caizimao nd17
 type: shield
-url: https://makerdiary.com/pages/m60-mechanical-keyboard
+url: https://maiku.taobao.com/
 requires: [makerdiary_nrf52840_m2]
 features:
   - keys
