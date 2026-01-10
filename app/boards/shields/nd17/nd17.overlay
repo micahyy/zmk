@@ -46,12 +46,6 @@ RC(4,0)          RC(4,2)
     };
 };
 
-&layout_60_ansi {
-    transform = <&default_transform>;
-};
-
-
-/ {
     led_strip: led_strip {
         compatible = "worldsemi,ws2812-spi";
         label = "WS2812";
@@ -73,5 +67,9 @@ RC(4,0)          RC(4,2)
         // WS2812 的 0 和 1 的 SPI 帧
         spi-one-frame = <0x70>;
         spi-zero-frame = <0x40>;
-    };
+
+&layout_60_ansi {
+    transform = <&default_transform>;
 };
+
+
