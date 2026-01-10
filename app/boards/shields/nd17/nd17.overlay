@@ -78,3 +78,4 @@ RC(4,0)          RC(4,2)
 &layout_60_ansi {
     transform = <&default_transform>;
 };
+};
