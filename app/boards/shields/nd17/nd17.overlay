@@ -1,5 +1,6 @@
 #include <dt-bindings/zmk/matrix_transform.h>
 #include <layouts/common/60percent/ansi.dtsi>
+#include <dt-bindings/led/led.h>
 
 / {
     chosen {
@@ -35,47 +36,18 @@ RC(3,0)  RC(3,1) RC(3,2) RC(3,3)
 RC(4,0)          RC(4,2)
         >;
     };
-&pinctrl {
-    // 使用 SPI0 控制器，P0.03 作为 MOSI
-    spi0_default: spi0_default {
-        group1 {
-            psels = <NRF_PSEL(SPIM_MOSI, 0, 3)>;  // P0.03
-        };
-    };
-
-    spi0_sleep: spi0_sleep {
-        group1 {
-            psels = <NRF_PSEL(SPIM_MOSI, 0, 3)>;  // P0.03
-            low-power-enable;
-        };
-    };
 };
 
-// 配置 SPI0 控制器
-&spi0 {
-    compatible = "nordic,nrf-spim";
-    status = "okay";
-    
-    pinctrl-0 = <&spi0_default>;
-    pinctrl-1 = <&spi0_sleep>;
-    pinctrl-names = "default", "sleep";
-    
-    // WS2812 LED strip
-    led_strip: ws2812@0 {
-        compatible = "worldsemi,ws2812-spi";
-        
-        reg = <0>;  // 必须，但被忽略
-        spi-max-frequency = <4000000>;
-        
-        chain-length = <17>;  // 17个按键
-        spi-one-frame = <0x70>;
-        spi-zero-frame = <0x40>;
-        
+// 简化的 GPIO 模式 LED 配置（更可靠）
+/ {
+    led_strip: ws2812 {
+        compatible = "worldsemi,ws2812-gpio";
+        chain-length = <17>;
+        in-gpios = <&gpio0 3 GPIO_ACTIVE_HIGH>;
         color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
     };
 };
 
 &layout_60_ansi {
     transform = <&default_transform>;
-};
 };
