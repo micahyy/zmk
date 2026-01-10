@@ -6,7 +6,6 @@
     chosen {
         zmk,kscan = &kscan0;
         zmk,physical-layout = &layout_60_ansi;
-        zmk,underglow = &led_strip;
     };
 
     kscan0: kscan {
@@ -38,16 +37,6 @@ RC(4,0)          RC(4,2)
     };
 };
 
-// 简化的 GPIO 模式 LED 配置（更可靠）
-/ {
-    led_strip: ws2812 {
-        compatible = "worldsemi,ws2812-gpio";
-        chain-length = <17>;
-        in-gpios = <&gpio0 3 GPIO_ACTIVE_HIGH>;
-        color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
-    };
-};
-
-&layout_60_ansi {
-    transform = <&default_transform>;
+&led_strip {
+    chain-length = <17>;
 };
