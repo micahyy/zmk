@@ -48,3 +48,33 @@ RC(4,0)          RC(4,2)
 &layout_60_ansi {
     transform = <&default_transform>;
 };
+
+
+/ {
+    chosen {
+        zmk,underglow = &led_strip;
+    };
+
+    led_strip: led_strip {
+        compatible = "worldsemi,ws2812-spi";
+        label = "WS2812";
+        
+        // P0.03 作为 MOSI
+        spi-mosi-pin = <&gpio0 3 0>;
+        
+        // SPI 频率（WS2812 通常需要 4MHz）
+        spi-max-frequency = <4000000>;
+        
+        // 17个按键
+        chain-length = <17>;
+        
+        // RGB 颜色顺序（根据你的 LED 型号调整）
+        color-mapping = <LED_COLOR_ID_GREEN 
+                         LED_COLOR_ID_RED 
+                         LED_COLOR_ID_BLUE>;
+        
+        // WS2812 的 0 和 1 的 SPI 帧
+        spi-one-frame = <0x70>;
+        spi-zero-frame = <0x40>;
+    };
+};
