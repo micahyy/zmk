@@ -1,15 +1,60 @@
+# identifier: 板级标识符
+# 用于在构建系统中唯一标识此开发板
+# 与Kconfig中的BOARD_NRF52840_M2对应
 identifier: nrf52840_m2
+
+# name: 开发板名称
+# 用户友好的描述性名称
 name: Makerdiary nRF52840 M.2 module
+
+# type: 开发板类型
+# "mcu"表示这是一个微控制器单元（MCU）开发板
+# 区别于其他类型如传感器板、扩展板等
 type: mcu
+
+# arch: 处理器架构
+# "arm"表示使用ARM架构的处理器
+# nRF52840使用ARM Cortex-M4内核
 arch: arm
+
+# toolchain: 支持的编译工具链
+# 列出此开发板支持的编译工具链
 toolchain:
+  # zephyr: Zephyr SDK自带的工具链
+  # 这是Zephyr RTOS官方推荐的工具链
   - zephyr
+  
+  # gnuarmemb: GNU ARM Embedded工具链
+  # ARM官方维护的GCC工具链
   - gnuarmemb
+  
+  # xtools: CrossTools工具链
+  # 一些交叉编译工具链的通用名称
   - xtools
+
+# supported: 支持的功能特性
+# 列出此开发板硬件支持的功能模块
 supported:
+  # adc: 模数转换器
+  # 支持模拟信号到数字信号的转换
   - adc
+  
+  # usb_device: USB设备功能
+  # 支持作为USB从设备（如键盘、鼠标等）
   - usb_device
+  
+  # ble: 蓝牙低功耗
+  # 支持蓝牙5.0低功耗通信
   - ble
+  
+  # ieee802154: IEEE 802.15.4无线通信
+  # 支持Zigbee、Thread、6LoWPAN等协议的物理层
   - ieee802154
+  
+  # pwm: 脉冲宽度调制
+  # 支持PWM输出，可用于控制LED亮度、电机速度等
   - pwm
+  
+  # watchdog: 看门狗定时器
+  # 支持硬件看门狗，防止系统死机
   - watchdog

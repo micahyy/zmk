@@ -1,21 +1,55 @@
+# 版权声明：该文件版权归ZMK贡献者所有
 # Copyright (c) 2020 The ZMK Contributors
+
+# SPDX许可证标识符：该文件使用MIT许可证
 # SPDX-License-Identifier: MIT
 
-# Enable MPU
+# 启用ARM内存保护单元（MPU）
+# 用于内存访问权限控制，增强系统安全性
 CONFIG_ARM_MPU=y
 
-# enable GPIO
+# 启用GPIO（通用输入输出）驱动
+# 提供对芯片引脚的控制功能
 CONFIG_GPIO=y
 
+# 启用使用设备树（Device Tree）定义的代码分区
+# 允许根据设备树配置来划分存储空间
 CONFIG_USE_DT_CODE_PARTITION=y
+
+# 构建输出为UF2格式文件
+# UF2是USB Flashing Format，专为USB大容量存储设备编程设计
+# 常用于RP2040、nRF等芯片的拖放式编程
 CONFIG_BUILD_OUTPUT_UF2=y
 
+# 允许MPU下的闪存写入操作
+# 通常MPU会限制对某些内存区域的写入，此配置允许写入闪存区域
 CONFIG_MPU_ALLOW_FLASH_WRITE=y
+
+# 启用NVS（非易失性存储）子系统
+# 用于在闪存中存储键值对数据
 CONFIG_NVS=y
+
+# 启用基于NVS的设置存储系统
+# 用于存储应用程序配置和设置
 CONFIG_SETTINGS_NVS=y
+
+# 启用闪存驱动
+# 提供对闪存设备的访问接口
 CONFIG_FLASH=y
+
+# 启用闪存页面布局支持
+# 允许查询闪存的页面大小和布局信息
 CONFIG_FLASH_PAGE_LAYOUT=y
+
+# 启用闪存映射支持
+# 用于管理闪存区域的分区和映射
 CONFIG_FLASH_MAP=y
 
+# 启用ZMK的USB功能
+# ZMK（Zephyr Mechanical Keyboard）框架的USB支持
+# 可能用于键盘HID设备功能
 CONFIG_ZMK_USB=y
+
+# 启用ZMK的蓝牙低功耗（BLE）功能
+# 提供蓝牙无线键盘功能
 CONFIG_ZMK_BLE=y

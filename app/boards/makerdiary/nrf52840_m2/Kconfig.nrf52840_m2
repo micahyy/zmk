@@ -1,8 +1,29 @@
+# 版权声明：该文件版权归ZMK贡献者所有
 # Copyright (c) 2020 The ZMK Contributors
+
+# SPDX许可证标识符：该文件使用Apache 2.0许可证
 # SPDX-License-Identifier: Apache-2.0
 
+# 定义开发板配置选项：NRF52840_M2开发板
+# config: 开始定义一个新的Kconfig配置项
+# BOARD_NRF52840_M2: 开发板标识符，表示这是针对NRF52840_M2开发板的配置
 config BOARD_NRF52840_M2
+    # select: 强制选择依赖项
+    # SOC_NRF52840_QIAA: 选择nRF52840芯片的特定型号（QIAA封装）
+    # 当BOARD_NRF52840_M2被选中时，SOC_NRF52840_QIAA也会自动被选中
     select SOC_NRF52840_QIAA
+    
+    # imply: 暗示/推荐选择某个选项（用户仍可以取消选择）
+    # RETAINED_MEM: 保留内存功能，用于在系统复位或低功耗模式下保持数据
+    # 当BOARD_NRF52840_M2被选中时，RETAINED_MEM会默认启用，但用户可以手动关闭
     imply RETAINED_MEM
+    
+    # imply: 暗示/推荐选择某个选项
+    # RETENTION: 一般性的数据保持功能配置
+    # 可能指芯片的保持寄存器或其他保持功能
     imply RETENTION
+    
+    # imply: 暗示/推荐选择某个选项
+    # RETENTION_BOOT_MODE: 保持引导模式功能
+    # 可能用于在复位后保持引导模式设置，或支持特殊启动流程
     imply RETENTION_BOOT_MODE

@@ -1,16 +1,36 @@
+# 版权声明：该文件版权归ZMK贡献者所有
 # Copyright (c) 2020 The ZMK Contributors
+
+# SPDX许可证标识符：该文件使用MIT许可证
 # SPDX-License-Identifier: MIT
 
+# 条件判断：如果目标开发板是NRF52840_M2
+# 这个条件块中的配置仅适用于NRF52840_M2开发板
 if BOARD_NRF52840_M2
 
+# 嵌套条件判断：如果启用了USB设备栈
+# USB_DEVICE_STACK 是Zephyr RTOS中USB设备功能的配置选项
 if USB_DEVICE_STACK
 
+# 配置USB驱动：使用nRF系列的USB驱动
+# config: 开始定义配置选项
+# USB_NRFX: nRF系列芯片的USB驱动程序配置
 config USB_NRFX
+    # default y: 默认启用该驱动
+    # 当USB_DEVICE_STACK启用时，自动使用nRFX USB驱动
     default y
 
+# 结束USB_DEVICE_STACK条件块
 endif # USB_DEVICE_STACK
 
+# 配置蓝牙控制器选项
+# config: 开始定义蓝牙控制器的配置选项
+# BT_CTLR: 蓝牙低功耗（BLE）控制器驱动
 config BT_CTLR
+    # default BT: 默认值与BT选项保持一致
+    # 这意味着当BT（蓝牙功能）启用时，BT_CTLR也会自动启用
+    # BT是顶层的蓝牙功能开关，BT_CTLR是实现蓝牙协议的底层控制器
     default BT
 
+# 结束BOARD_NRF52840_M2条件块
 endif # BOARD_NRF52840_M2

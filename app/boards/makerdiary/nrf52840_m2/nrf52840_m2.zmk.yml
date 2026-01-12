@@ -1,10 +1,43 @@
+# file_format: 文件格式版本
+# "1" 表示这是版本1的文件格式
+# 用于向后兼容性检查
 file_format: "1"
+
+# id: 开发板唯一标识符
+# 用于在系统内唯一标识此开发板
+# 通常与之前的配置文件中使用的标识符一致
 id: nrf52840_m2
+
+# name: 开发板显示名称
+# 用户界面中显示的友好名称
 name: nRF52840 M.2 Module
+
+# type: 硬件类型
+# "board" 表示这是一个完整的开发板
+# 区别于module、shield等其他类型
 type: board
+
+# arch: 处理器架构
+# "arm" 表示使用ARM架构处理器
+# nRF52840采用ARM Cortex-M4内核
 arch: arm
+
+# outputs: 支持的输出接口
+# 列出此开发板支持的通信接口类型
 outputs:
+  # usb: USB接口支持
+  # 支持通过USB与主机设备通信
   - usb
+  
+  # ble: 蓝牙低功耗支持
+  # 支持通过蓝牙无线通信
   - ble
+
+# url: 官方文档链接
+# 指向开发板的官方文档和资源页面
 url: https://wiki.makerdiary.com/nrf52840-m2/
+
+# exposes: 公开的接口标识
+# 列出此开发板暴露给其他模块或应用的接口
+# 这里使用了开发板的完整标识符作为公开接口
 exposes: [makerdiary_nrf52840_m2]

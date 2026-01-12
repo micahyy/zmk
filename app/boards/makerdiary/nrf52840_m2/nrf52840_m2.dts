@@ -1,99 +1,152 @@
 /*
+ * 版权声明：该文件版权归ZMK贡献者所有
  * Copyright (c) 2020 The ZMK Contributors
  *
+ * SPDX许可证标识符：该文件使用MIT许可证
  * SPDX-License-Identifier: MIT
  */
 
+// 指定设备树语法版本
 /dts-v1/;
+
+// 包含nRF52840芯片的设备树定义（QIAA封装版本）
 #include <nordic/nrf52840_qiaa.dtsi>
+
+// 包含nRF52840 UF2引导模式的设备树定义
 #include <common/nordic/nrf52840_uf2_boot_mode.dtsi>
 
+// 根节点开始，定义整个系统的设备树结构
 / {
+    // 设备型号描述
     model = "Makerdiary nRF52840 M.2 module";
+    
+    // 设备兼容性标识，用于驱动匹配
     compatible = "makerdiary,nrf52840_m2";
 
+    // chosen节点：包含系统运行时选择的设备
     chosen {
+        // 指定代码分区的位置
         zephyr,code-partition = &code_partition;
+        // 指定SRAM内存区域
         zephyr,sram = &sram0;
+        // 指定闪存设备
         zephyr,flash = &flash0;
+        // 指定ZMK框架使用的电池监测设备
         zmk,battery = &vbatt;
     };
 
+    // LED节点：定义板载LED
     leds {
+        // 兼容性标识：GPIO控制的LED
         compatible = "gpio-leds";
+        
+        // 红色LED定义
         red_led: led_0 {
+            // GPIO配置：使用GPIO0的第30引脚，高电平有效
             gpios = <&gpio0 30 GPIO_ACTIVE_HIGH>;
         };
+        
+        // 绿色LED定义
         green_led: led_1 {
+            // GPIO配置：使用GPIO0的第29引脚，高电平有效
             gpios = <&gpio0 29 GPIO_ACTIVE_HIGH>;
         };
+        
+        // 蓝色LED定义
         blue_led: led_2 {
+            // GPIO配置：使用GPIO0的第31引脚，高电平有效
             gpios = <&gpio0 31 GPIO_ACTIVE_HIGH>;
         };
     };
 
+    // 电池电压监测节点
     vbatt: vbatt {
+        // 兼容性标识：ZMK框架的电池电压分压器
         compatible = "zmk,battery-voltage-divider";
+        // 使用ADC通道0进行测量
         io-channels = <&adc 0>;
+        // 输出电阻值：1MΩ
         output-ohms = <1000000>;
+        // 总分压电阻值：2MΩ（两个1MΩ电阻串联）
         full-ohms = <(1000000 + 1000000)>;
     };
-
 };
 
+// 配置ADC外设
 &adc {
+    // 启用ADC外设
     status = "okay";
 };
 
+// 配置GPIO任务事件外设
 &gpiote {
+    // 启用GPIO任务事件外设
     status = "okay";
 };
 
+// 配置GPIO端口0
 &gpio0 {
+    // 启用GPIO端口0
     status = "okay";
 };
 
+// 配置GPIO端口1
 &gpio1 {
+    // 启用GPIO端口1
     status = "okay";
 };
 
+// USB设备控制器配置（别名定义）
 zephyr_udc0: &usbd {
+    // 兼容性标识：Nordic nRF USB设备控制器
     compatible = "nordic,nrf-usbd";
+    // 启用USB设备控制器
     status = "okay";
 };
 
-
+// 闪存分区配置
 &flash0 {
     /*
-     * For more information, see:
+     * 更多信息请参考：
      * http://docs.zephyrproject.org/latest/devices/dts/flash_partitions.html
      */
+    
+    // 分区定义节点
     partitions {
+        // 兼容性标识：固定大小的分区
         compatible = "fixed-partitions";
+        // 地址单元大小：1个32位字表示地址
         #address-cells = <1>;
+        // 大小单元大小：1个32位字表示大小
         #size-cells = <1>;
 
+        // 软设备（SoftDevice）分区：存放蓝牙协议栈
         sd_partition: partition@0 {
+            // 地址范围：从0x0开始，大小0x26000（152KB）
             reg = <0x00000000 0x00026000>;
         };
+        
+        // 代码分区：存放应用程序代码
         code_partition: partition@26000 {
+            // 地址范围：从0x26000开始，大小0xC6000（792KB）
             reg = <0x00026000 0x000c6000>;
         };
 
         /*
-         * The flash starting at 0x000ec000 and ending at
-         * 0x000f3fff is reserved for use by the application.
+         * 以下闪存区域保留给应用程序使用：
+         * 起始地址：0x000EC000
+         * 结束地址：0x000F3FFF
          */
 
-        /*
-         * Storage partition will be used by FCB/LittleFS/NVS
-         * if enabled.
-         */
+        // 存储分区：用于FCB/LittleFS/NVS文件系统
         storage_partition: partition@ec000 {
+            // 地址范围：从0xEC000开始，大小0x8000（32KB）
             reg = <0x000ec000 0x00008000>;
         };
 
+        // 引导加载程序分区
         boot_partition: partition@f4000 {
+            // 地址范围：从0xF4000开始，大小0xC000（48KB）
             reg = <0x000f4000 0x0000c000>;
         };
     };

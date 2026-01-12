@@ -1,5 +1,17 @@
+# 开始定义开发板（board）配置的顶层键
 board:
+  # name: 开发板标识名称
+  # 这里定义开发板名为 "nrf52840_m2"
   name: nrf52840_m2
+  
+  # vendor: 开发板制造商/供应商
+  # 这里指定制造商为 "makerdiary"（日记创客）
   vendor: makerdiary
+  
+  # socs: 系统芯片（System on Chip）列表
+  # 定义该开发板上使用的片上系统
   socs:
+    # - name: 单个SoC的名称定义
+    # 这里指定使用的SoC型号为 "nrf52840"
+    # nrf52840是Nordic Semiconductor的一款蓝牙低功耗微控制器
     - name: nrf52840

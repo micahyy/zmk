@@ -1,8 +1,25 @@
+# 版权声明：该文件版权归ZMK贡献者所有
 # Copyright (c) 2020 The ZMK Contributors
+
+# SPDX许可证标识符：该文件使用MIT许可证
 # SPDX-License-Identifier: MIT
 
+# 定义一个Kconfig配置选项，用于配置开发板的电源管理
+# config: 开始定义一个新的配置选项
+# BOARD_ENABLE_DCDC: 配置选项的名称（开发板使能DCDC模式）
 config BOARD_ENABLE_DCDC
+    # bool: 表示这是一个布尔类型（是/否）的配置选项
+    # "Enable DCDC mode": 用户界面显示的描述文本
     bool "Enable DCDC mode"
+    
+    # select: 当这个选项被选中时，自动选择另一个依赖选项
+    # SOC_DCDC_NRF52X: 自动选择nRF52x系列的DCDC外设驱动
     select SOC_DCDC_NRF52X
+    
+    # default y: 默认值为"是"（启用）
+    # 这意味着如果不手动修改，该功能默认启用
     default y
+    
+    # depends on: 配置选项的依赖条件
+    # BOARD_NRF52840_M2: 仅当目标开发板是nrf52840_m2时，此选项才可见/可用
     depends on BOARD_NRF52840_M2
