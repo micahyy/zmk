@@ -6,4 +6,3 @@ features:
   - keys
 requires:
   - nice_nano_v2
-  - nrf52840dk_nrf52840
