@@ -1,0 +1,10 @@
+# app/boards/shields/rgb_pad/rgb_pad.zmk.yml
+file_format: "1"
+id: rgb_pad
+name: RGB Test Pad
+type: shield
+features:
+  - keys
+  - rgb
+requires:
+  - nice_nano_v2

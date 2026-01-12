@@ -1,0 +1,26 @@
+/*
+ * Simple 12-key layout with RGB control
+ */
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/rgb.h>
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &kp Q       &kp W       &kp E       &kp R
+                &kp A       &kp S       &kp D       &kp F
+                &kp Z       &kp X       &kp C       &kp V
+            >;
+        };
+    };
+
+    behaviors {
+        rgb {
+            compatible = "zmk,behavior-rgb";
+            #binding-cells = <0>;
+        };
+    };
+};
