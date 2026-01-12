@@ -1,0 +1,32 @@
+/*
+ * nd17.overlay
+ * 仅包含硬件矩阵扫描配置（5 行 x 4 列）
+ */
+
+/dts-v1/;
+
+/ {
+    kscan: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        label = "KSCAN";
+        diode-direction = "col2row";  // 根据你的二极管方向调整
+        poll-interval-ms = <10>;
+
+        /* 行引脚（通常设为输入，带下拉） */
+        row-gpios = <
+            &gpio0 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)  /* R0 */
+            &gpio0 30 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)  /* R1 */
+            &gpio0 31 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)  /* R2 */
+            &gpio0 29 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)  /* R3 */
+            &gpio0  2 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)  /* R4 */
+        >;
+
+        /* 列引脚（输出） */
+        col-gpios = <
+            &gpio0  5 GPIO_ACTIVE_HIGH  /* C0 */
+            &gpio0 13 GPIO_ACTIVE_HIGH  /* C1 */
+            &gpio0 24 GPIO_ACTIVE_HIGH  /* C2 */
+            &gpio0  9 GPIO_ACTIVE_HIGH  /* C3 */
+        >;
+    };
+};

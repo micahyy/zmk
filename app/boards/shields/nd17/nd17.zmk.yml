@@ -1,0 +1,10 @@
+# app/boards/shields/nd17/nd17.zmk.yml
+file_format: "1"
+id: nd17
+name: ND17 Numeric Keypad
+type: keypad
+url: https://your-github-or-project-url.com  # 可选
+requires:
+  - nrf52840dk_nrf52840  # 明确支持的 board
+features:
+  - keys

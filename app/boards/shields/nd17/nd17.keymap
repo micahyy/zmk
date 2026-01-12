@@ -1,0 +1,40 @@
+// 定义 5x4 布局宏
+#define LAYOUT_5x4( \
+    k00, k01, k02, k03, \
+    k10, k11, k12, k13, \
+    k20, k21, k22, k23, \
+    k30, k31, k32, k33, \
+    k40, k41, k42, k43 \
+) { \
+    { k00, k01, k02, k03 }, \
+    { k10, k11, k12, k13 }, \
+    { k20, k21, k22, k23 }, \
+    { k30, k31, k32, k33 }, \
+    { k40, k41, k42, k43 } \
+}
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+        default_layer {
+            bindings = <
+
+                /* 第0行：NumLock, /, *, - */
+                &kp NUM_LOCK   &kp NUS_SLASH &kp NUS_ASTERISK &kp NUS_MINUS
+
+                /* 第1行：7, 8, 9, + */
+                &kp N7         &kp N8        &kp N9           &kp NUS_PLUS
+
+                /* 第2行：4, 5, 6, (空) */
+                &kp N4         &kp N5        &kp N6           &none
+
+                /* 第3行：1, 2, 3, Enter */
+                &kp N1         &kp N2        &kp N3           &kp ENTER
+
+                /* 第4行：0, ., (空), (空) */
+                &kp N0         &kp NUS_DOT   &none            &none
+
+            >;
+        };
+    };
+};
