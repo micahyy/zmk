@@ -1,4 +1,3 @@
-# app/boards/shields/nd17/nd17.zmk.yml
 file_format: "1"
 id: nd17
 name: ND17 Numeric Keypad
@@ -6,6 +5,5 @@ type: shield
 features:
   - keys
 requires:
-  - nrf52840dk_nrf52840   # 必须列出支持的 board
-
-
+  - nice_nano_v2
+  - nrf52840dk_nrf52840
