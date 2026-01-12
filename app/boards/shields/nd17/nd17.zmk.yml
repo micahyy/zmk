@@ -2,9 +2,10 @@
 file_format: "1"
 id: nd17
 name: ND17 Numeric Keypad
-type: keypad
-url: https://your-github-or-project-url.com  # 可选
-requires:
-  - nrf52840dk_nrf52840  # 明确支持的 board
+type: shield
 features:
   - keys
+requires:
+  - nrf52840dk_nrf52840   # 必须列出支持的 board
+
+
