@@ -1,65 +1,104 @@
 /*
+ * 版权声明：该文件版权归ZMK贡献者所有
  * Copyright (c) 2020 The ZMK Contributors
  *
+ * SPDX许可证标识符：该文件使用MIT许可证
  * SPDX-License-Identifier: MIT
  */
 
+// 包含ZMK矩阵变换绑定定义
 #include <dt-bindings/zmk/matrix_transform.h>
 
+// 包含标准的60% ANSI布局定义
+// 这定义了物理按键的排列方式，但不包含键值映射
 #include <layouts/common/60percent/ansi.dtsi>
 
+// 根节点开始
 / {
+    // chosen节点：系统运行时选择的配置
     chosen {
+        // 指定键盘扫描（keyscan）设备为kscan0
         zmk,kscan = &kscan0;
+        // 指定物理布局为标准的60% ANSI布局
         zmk,physical-layout = &layout_60_ansi;
     };
 
+    // 定义键盘扫描器（keyscan）
+    // 这是检测按键按下/释放的核心组件
     kscan0: kscan {
+        // 兼容性标识：GPIO矩阵扫描
         compatible = "zmk,kscan-gpio-matrix";
+        // 唤醒源：键盘可以唤醒系统（从睡眠状态）
         wakeup-source;
 
+        // 二极管方向：列到行（col2row）
+        // 表示电流从列引脚流向行引脚
         diode-direction = "col2row";
+        
+        // 行GPIO引脚配置（8行）
+        // 每行使用一个GPIO引脚，配置为上拉输入
         row-gpios
-            = <&gpio0 5 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            , <&gpio0 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            , <&gpio0 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            , <&gpio0 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            , <&gpio1 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            , <&gpio1 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            , <&gpio0 12 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            , <&gpio0 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            = <&gpio0 5 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // 行0
+            , <&gpio0 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // 行1
+            , <&gpio0 7 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // 行2
+            , <&gpio0 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // 行3
+            , <&gpio1 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // 行4
+            , <&gpio1 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // 行5
+            , <&gpio0 12 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // 行6
+            , <&gpio0 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> // 行7
             ;
+        
+        // 列GPIO引脚配置（8列）
+        // 每列使用一个GPIO引脚，配置为输出
         col-gpios
-            = <&gpio0 19 GPIO_ACTIVE_HIGH>
-            , <&gpio0 20 GPIO_ACTIVE_HIGH>
-            , <&gpio0 21 GPIO_ACTIVE_HIGH>
-            , <&gpio0 22 GPIO_ACTIVE_HIGH>
-            , <&gpio0 23 GPIO_ACTIVE_HIGH>
-            , <&gpio0 24 GPIO_ACTIVE_HIGH>
-            , <&gpio0 25 GPIO_ACTIVE_HIGH>
-            , <&gpio0 26 GPIO_ACTIVE_HIGH>
+            = <&gpio0 19 GPIO_ACTIVE_HIGH>  // 列0
+            , <&gpio0 20 GPIO_ACTIVE_HIGH>  // 列1
+            , <&gpio0 21 GPIO_ACTIVE_HIGH>  // 列2
+            , <&gpio0 22 GPIO_ACTIVE_HIGH>  // 列3
+            , <&gpio0 23 GPIO_ACTIVE_HIGH>  // 列4
+            , <&gpio0 24 GPIO_ACTIVE_HIGH>  // 列5
+            , <&gpio0 25 GPIO_ACTIVE_HIGH>  // 列6
+            , <&gpio0 26 GPIO_ACTIVE_HIGH>  // 列7
             ;
     };
 
+    // 定义默认的矩阵变换
+    // 将物理按键位置映射到逻辑按键位置
     default_transform: keymap_transform_0 {
         compatible = "zmk,matrix-transform";
-        columns = <8>;
-        rows = <8>;
-// | MX1  | MX2  | MX3  | MX4  | MX5  | MX6  | MX7  | MX8  | MX9  | MX10 | MX11 | MX12 | MX13 |    MX14     |
-// |   MX15   | MX16 | MX17 | MX18 | MX19 | MX20 | MX21 | MX22 | MX23 | MX24 | MX25 | MX26 | MX27 |  MX28   |
-// |    MX29    | MX30 | MX31 | MX32 | MX33 | MX34 | MX35 | MX36 | MX37 | MX38 | MX39 | MX40 |     MX41     |
-// |     MX42      | MX43 | MX44 | MX45 | MX46 | MX47 | MX48 | MX49 | MX50 | MX51 | MX52 |       MX53       |
-// |  MX54  |  MX55  |  MX56  |                  MX57                   |  MX58  |  MX59  |  MX60  |  MX61  |
+        columns = <8>;  // 8列
+        rows = <8>;     // 8行（8×8=64个可能的按键位置）
+        
+        // ASCII布局图，显示MX开关编号
+        // | MX1  | MX2  | MX3  | MX4  | MX5  | MX6  | MX7  | MX8  | MX9  | MX10 | MX11 | MX12 | MX13 |    MX14     |
+        // |   MX15   | MX16 | MX17 | MX18 | MX19 | MX20 | MX21 | MX22 | MX23 | MX24 | MX25 | MX26 | MX27 |  MX28   |
+        // |    MX29    | MX30 | MX31 | MX32 | MX33 | MX34 | MX35 | MX36 | MX37 | MX38 | MX39 | MX40 |     MX41     |
+        // |     MX42      | MX43 | MX44 | MX45 | MX46 | MX47 | MX48 | MX49 | MX50 | MX51 | MX52 |       MX53       |
+        // |  MX54  |  MX55  |  MX56  |                  MX57                   |  MX58  |  MX59  |  MX60  |  MX61  |
+        
+        // map: 矩阵映射表
+        // RC(row, col): 表示矩阵中的第row行第col列
+        // 这个映射定义了每个按键在矩阵中的位置
         map = <
-RC(0,0)  RC(0,1) RC(0,2) RC(0,3) RC(0,4) RC(0,5) RC(0,6) RC(0,7) RC(1,0) RC(1,1) RC(1,2) RC(1,3) RC(1,4)     RC(1,5)
-RC(3,3)    RC(3,2) RC(3,1) RC(3,0) RC(2,7) RC(2,6) RC(2,5) RC(2,4) RC(2,3) RC(2,2) RC(2,1) RC(2,0) RC(1,7)   RC(1,6)
-RC(3,4)     RC(3,5) RC(3,6) RC(3,7) RC(4,0) RC(4,1) RC(4,2) RC(4,3) RC(4,4) RC(4,5) RC(4,6) RC(4,7)          RC(5,0)
-RC(6,4)       RC(6,3) RC(6,2) RC(6,1) RC(6,0) RC(5,7) RC(5,6) RC(5,5) RC(5,4) RC(5,3) RC(5,2)                RC(5,1)
-RC(6,5)    RC(6,6)   RC(6,7)                     RC(7,0)                    RC(7,1)    RC(7,2)    RC(7,3)    RC(7,4)
+            // 第一行（14个键）
+            RC(0,0)  RC(0,1) RC(0,2) RC(0,3) RC(0,4) RC(0,5) RC(0,6) RC(0,7) RC(1,0) RC(1,1) RC(1,2) RC(1,3) RC(1,4)     RC(1,5)
+            
+            // 第二行（14个键）
+            RC(3,3)    RC(3,2) RC(3,1) RC(3,0) RC(2,7) RC(2,6) RC(2,5) RC(2,4) RC(2,3) RC(2,2) RC(2,1) RC(2,0) RC(1,7)   RC(1,6)
+            
+            // 第三行（13个键，最后一个键是2U Enter）
+            RC(3,4)     RC(3,5) RC(3,6) RC(3,7) RC(4,0) RC(4,1) RC(4,2) RC(4,3) RC(4,4) RC(4,5) RC(4,6) RC(4,7)          RC(5,0)
+            
+            // 第四行（12个键，Shift键较大）
+            RC(6,4)       RC(6,3) RC(6,2) RC(6,1) RC(6,0) RC(5,7) RC(5,6) RC(5,5) RC(5,4) RC(5,3) RC(5,2)                RC(5,1)
+            
+            // 第五行（8个键，空格键较大）
+            RC(6,5)    RC(6,6)   RC(6,7)                     RC(7,0)                    RC(7,1)    RC(7,2)    RC(7,3)    RC(7,4)
         >;
     };
 };
 
+// 修改标准的60% ANSI布局，应用自定义的矩阵变换
 &layout_60_ansi {
     transform = <&default_transform>;
 };

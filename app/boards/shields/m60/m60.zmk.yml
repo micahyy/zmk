@@ -1,9 +1,40 @@
+# file_format: 文件格式版本
+# "1" 表示这是版本1的文件格式
+# 用于确保向后兼容性
 file_format: "1"
+
+# id: shield的唯一标识符
+# "m60" 用于在构建系统和配置中引用此shield
+# 这与之前的Kconfig中的SHIELD_M60对应
 id: m60
+
+# name: shield的显示名称
+# 用户界面中显示的友好名称
+# "MakerDiary m60" 表明这是MakerDiary公司生产的m60键盘
 name: MakerDiary m60
+
+# type: 硬件类型
+# "shield" 表示这是一个扩展板/外设板
+# 在Zephyr/ZMK中，shield指代特定应用的硬件配置
 type: shield
+
+# url: 产品官方页面链接
+# 指向制造商的产品页面，用户可以在此获取更多信息
 url: https://makerdiary.com/pages/m60-mechanical-keyboard
+
+# requires: 必需的依赖板级支持包
+# 列出此shield需要的基础开发板
+# [makerdiary_nrf52840_m2] 表示需要makerdiary_nrf52840_m2开发板
 requires: [makerdiary_nrf52840_m2]
+
+# features: shield提供的功能特性
+# 列出此shield支持的主要功能
 features:
+  # keys: 键盘按键功能
+  # 提供完整的键盘矩阵和按键支持
   - keys
+  
+  # studio: MakerDiary Studio支持
+  # MakerDiary的开发环境或配置工具支持
+  # 可能指图形化配置界面或专用软件
   - studio

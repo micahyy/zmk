@@ -1,43 +1,84 @@
 /*
+ * 版权声明：该文件版权归ZMK贡献者所有
  * Copyright (c) 2020 The ZMK Contributors
  *
+ * SPDX许可证标识符：该文件使用MIT许可证
  * SPDX-License-Identifier: MIT
  */
 
+// 包含ZMK行为定义文件
+// behaviors.dtsi定义了各种按键行为，如&kp（按键）、&mo（瞬时层切换）等
 #include <behaviors.dtsi>
+
+// 包含ZMK键值定义
+// keys.h定义了所有标准键盘键值，如ESC、TAB、A、B等
 #include <dt-bindings/zmk/keys.h>
+
+// 包含ZMK蓝牙相关定义
+// bt.h定义了蓝牙相关的行为，如蓝牙设备切换
 #include <dt-bindings/zmk/bt.h>
 
+// 根节点开始
 / {
+    // 定义键位映射节点，标签为keymap0
+    // compatible属性表明这是ZMK键位映射
     keymap0: keymap {
         compatible = "zmk,keymap";
 
+        // 默认层定义（第一层）
         default_layer {
+            // 显示名称，用于配置工具或日志中显示
             display-name = "Default Layer";
-// ------------------------------------------------------------------------------------------
-// | ESC |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |   BSPC   |
-// | TAB  |  Q  |  W  |  E  |  R  |  T  |  Y  |  U  |  I  |  O  |  P  |  [  |  ]  |    \    |
-// | CAPS  |  A  |  S  |  D  |  F  |  G  |  H  |  J  |  K  |  L  |  ;  |  '  |     ENTER    |
-// |  SHIFT  |  Z  |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  |  /  |      SHIFT       |
-// |  CTL  |  WIN  |  ALT  |            SPACE               | ALT | MO(1) |  WIN  | CTRL    |
-// ------------------------------------------------------------------------------------------
+            
+            // ASCII艺术布局图，显示键盘的物理布局
+            // ------------------------------------------------------------------------------------------
+            // | ESC |  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  0  |  -  |  =  |   BSPC   |
+            // | TAB  |  Q  |  W  |  E  |  R  |  T  |  Y  |  U  |  I  |  O  |  P  |  [  |  ]  |    \    |
+            // | CAPS  |  A  |  S  |  D  |  F  |  G  |  H  |  J  |  K  |  L  |  ;  |  '  |     ENTER    |
+            // |  SHIFT  |  Z  |  X  |  C  |  V  |  B  |  N  |  M  |  ,  |  .  |  /  |      SHIFT       |
+            // |  CTL  |  WIN  |  ALT  |            SPACE               | ALT | MO(1) |  WIN  | CTRL    |
+            // ------------------------------------------------------------------------------------------
+            
+            // bindings: 实际按键绑定，按行排列，对应上面的ASCII布局
             bindings = <
-    &kp ESC &kp N1 &kp N2 &kp N3 &kp N4 &kp N5 &kp N6 &kp N7 &kp   N8  &kp  N9 &kp  N0  &kp MINUS &kp EQUAL &kp BSPC
-    &kp TAB  &kp Q  &kp W  &kp E  &kp R  &kp T  &kp Y  &kp U  &kp   I   &kp  O  &kp   P  &kp LBKT &kp RBKT  &kp BSLH
-    &kp CLCK  &kp A  &kp S  &kp D  &kp F  &kp G  &kp H  &kp J  &kp   K   &kp  L  &kp SEMI &kp SQT           &kp RET
-    &kp LSHFT  &kp Z  &kp X  &kp C  &kp V  &kp B  &kp N  &kp M  &kp COMMA &kp DOT &kp FSLH         &kp RSHFT
-    &kp LCTRL &kp LGUI &kp LALT               &kp SPACE                 &kp  RALT  &mo  1  &kp  RGUI  &kp  RCTRL
+                // 第一行：数字行
+                &kp ESC &kp N1 &kp N2 &kp N3 &kp N4 &kp N5 &kp N6 &kp N7 &kp N8 &kp N9 &kp N0 &kp MINUS &kp EQUAL &kp BSPC
+                
+                // 第二行：QWERTY行
+                &kp TAB  &kp Q  &kp W  &kp E  &kp R  &kp T  &kp Y  &kp U  &kp I   &kp O  &kp P  &kp LBKT &kp RBKT  &kp BSLH
+                
+                // 第三行：ASDF行
+                &kp CLCK  &kp A  &kp S  &kp D  &kp F  &kp G  &kp H  &kp J  &kp K   &kp L  &kp SEMI &kp SQT           &kp RET
+                
+                // 第四行：ZXCV行
+                &kp LSHFT  &kp Z  &kp X  &kp C  &kp V  &kp B  &kp N  &kp M  &kp COMMA &kp DOT &kp FSLH         &kp RSHFT
+                
+                // 第五行：功能键和空格行
+                &kp LCTRL &kp LGUI &kp LALT               &kp SPACE                 &kp RALT  &mo 1  &kp RGUI  &kp RCTRL
             >;
         };
 
+        // 功能层定义（第二层，通过mo(1)激活）
         fn_layer {
             display-name = "Fn Layer";
             bindings = <
-&kp GRAVE  &kp F1     &kp F2     &kp F3     &kp F4     &kp F5     &kp F6     &kp F7     &kp F8     &kp F9     &kp F10    &kp F11    &kp F12    &bootloader
-&trans         &bt BT_CLR &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &sys_reset
-&trans           &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &kp LEFT   &kp DOWN   &kp UP   &kp RIGHT   &none      &none      &trans
-&trans                &none      &none      &none      &none      &none      &none      &none      &none      &none      &none      &trans
-&trans       &trans       &trans       &trans                                                                     &trans     &trans     &trans     &trans
+                // 第一行：功能键和特殊功能
+                // GRAVE(`/~) F1-F12 刷机模式
+                &kp GRAVE  &kp F1 &kp F2 &kp F3 &kp F4 &kp F5 &kp F6 &kp F7 &kp F8 &kp F9 &kp F10 &kp F11 &kp F12 &bootloader
+                
+                // 第二行：蓝牙功能
+                // trans(透传，保持下层功能) 蓝牙清除 其他为空键
+                &trans &bt BT_CLR &none &none &none &none &none &none &none &none &none &none &none &sys_reset
+                
+                // 第三行：蓝牙选择和方向键
+                // trans 蓝牙选择设备0-4 方向键
+                &trans &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &kp LEFT &kp DOWN &kp UP &kp RIGHT &none &none &trans
+                
+                // 第四行：全部为空键，透传Shift
+                &trans &none &none &none &none &none &none &none &none &none &none &trans
+                
+                // 第五行：全部透传，保持下层功能
+                &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
             >;
         };
     };

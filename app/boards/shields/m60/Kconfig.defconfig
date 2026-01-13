@@ -1,9 +1,21 @@
+# 版权声明：该文件版权归ZMK贡献者所有
 # Copyright (c) 2020 The ZMK Contributors
+
+# SPDX许可证标识符：该文件使用MIT许可证
 # SPDX-License-Identifier: MIT
 
+# 条件判断：如果使用M60键盘外壳（shield）
+# SHIELD_M60 是Zephyr/ZMK中用于标识键盘外壳的配置选项
 if SHIELD_M60
 
+# 配置ZMK键盘名称
+# config: 开始定义一个新的Kconfig配置项
+# ZMK_KEYBOARD_NAME: ZMK框架中用于标识键盘名称的变量
 config ZMK_KEYBOARD_NAME
+    # default: 设置默认值
+    # "m60": 将键盘名称默认设置为"m60"
+    # 当SHIELD_M60被选中时，键盘名称自动设为"m60"
     default "m60"
 
+# 结束条件判断块
 endif

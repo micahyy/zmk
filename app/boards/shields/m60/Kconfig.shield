@@ -1,5 +1,17 @@
+# 版权声明：该文件版权归ZMK贡献者所有
 # Copyright (c) 2020 The ZMK Contributors
+
+# SPDX许可证标识符：该文件使用MIT许可证
 # SPDX-License-Identifier: MIT
 
+# 定义M60键盘外壳（shield）的配置选项
+# config: 开始定义一个新的Kconfig配置项
+# SHIELD_M60: 标识是否使用M60键盘外壳的配置变量
 config SHIELD_M60
+    # def_bool: 定义布尔类型变量的默认值
+    # 使用条件表达式来确定默认值
+    # $(shields_list_contains,m60): Kconfig函数调用
+    #   检查shield列表中是否包含"m60"
+    #   如果包含，则SHIELD_M60默认为y（是）
+    #   如果不包含，则SHIELD_M60默认为n（否）
     def_bool $(shields_list_contains,m60)
