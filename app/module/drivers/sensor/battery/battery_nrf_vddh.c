@@ -56,6 +56,13 @@ static int vddh_sample_fetch(const struct device *dev, enum sensor_channel chan)
     }
 
     drv_data->value.millivolts = val * VDDHDIV;
+#if defined(CONFIG_ZMK_BATTERY_NRF_VDDH_DIODE_DROP_MV)
+    // Battery feeds VDDH through an orienting/Schottky diode (e.g. SS14);
+    // VDDH reads low by the diode forward drop. Add it back before the
+    // lithium SoC conversion so reported voltage and percentage match the
+    // actual battery voltage.
+    drv_data->value.millivolts += CONFIG_ZMK_BATTERY_NRF_VDDH_DIODE_DROP_MV;
+#endif
     drv_data->value.state_of_charge = lithium_ion_mv_to_pct(drv_data->value.millivolts);
 
     LOG_DBG("ADC raw %d ~ %d mV => %d%%", drv_data->value.adc_raw, drv_data->value.millivolts,
