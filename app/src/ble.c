@@ -33,6 +33,10 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/ble.h>
 #include <zmk/keys.h>
+#if IS_ENABLED(CONFIG_ZMK_BLE_DISCONNECT_ON_USB_READY)
+#include <zmk/usb.h>
+#include <zmk/events/usb_conn_state_changed.h>
+#endif
 #include <zmk/split/bluetooth/uuid.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/ble_active_profile_changed.h>
@@ -181,6 +185,15 @@ int update_advertising(void) {
     struct bt_conn *conn;
     enum advertising_type desired_adv = ZMK_ADV_NONE;
 
+#if IS_ENABLED(CONFIG_ZMK_BLE_DISCONNECT_ON_USB_READY)
+    // While the USB HID endpoint is up (cable plugged in & enumerated), stay
+    // silent over BLE -- don't advertise and don't let the host reconnect -- so
+    // the keyboard is not attached to the host over both transports at once.
+    // Clearing USB resumes advertising/reconnection via the switch below.
+    if (zmk_usb_is_hid_ready()) {
+        desired_adv = ZMK_ADV_NONE;
+    } else
+#endif
     if (zmk_ble_active_profile_is_open()) {
         desired_adv = ZMK_ADV_CONN;
     } else if (!zmk_ble_active_profile_is_connected()) {
@@ -831,5 +844,32 @@ static int zmk_ble_listener(const zmk_event_t *eh) {
 ZMK_LISTENER(zmk_ble, zmk_ble_listener);
 ZMK_SUBSCRIPTION(zmk_ble, zmk_keycode_state_changed);
 #endif /* IS_ENABLED(CONFIG_ZMK_BLE_PASSKEY_ENTRY) */
+
+#if IS_ENABLED(CONFIG_ZMK_BLE_DISCONNECT_ON_USB_READY)
+
+static void usb_ble_disconnect_work_cb(struct k_work *work) {
+    // Drop any active BLE profile connection...
+    for (int i = 0; i < ZMK_BLE_PROFILE_COUNT; i++) {
+        zmk_ble_prof_disconnect(i);
+    }
+    // ...then refresh advertising (suppressed while USB is ready, resumed when
+    // USB goes away). update_advertising_work posts the advertising work so the
+    // disconnected callback (which also re-posts it) can't start a new advert.
+    update_advertising();
+}
+
+static K_WORK_DEFINE(usb_ble_disconnect_work, usb_ble_disconnect_work_cb);
+
+static int usb_conn_listener(const zmk_event_t *eh) {
+    // Defer off the event handler thread; bt_conn_disconnect must not run inline
+    // while the Bluetooth connection callbacks are dispatching.
+    k_work_submit(&usb_ble_disconnect_work);
+    return 0;
+}
+
+ZMK_LISTENER(usb_conn_ble, usb_conn_listener);
+ZMK_SUBSCRIPTION(usb_conn_ble, zmk_usb_conn_state_changed);
+
+#endif /* IS_ENABLED(CONFIG_ZMK_BLE_DISCONNECT_ON_USB_READY) */
 
 SYS_INIT(zmk_ble_init, APPLICATION, CONFIG_ZMK_BLE_INIT_PRIORITY);

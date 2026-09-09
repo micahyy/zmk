@@ -212,6 +212,15 @@ config ZMK_BLE_MOUSE_REPORT_QUEUE_SIZE
 config ZMK_BLE_CLEAR_BONDS_ON_START
     bool "Configuration that clears all bond information from the keyboard on startup."
 
+# When the USB HID endpoint becomes ready (cable plugged in and enumerated),
+# drop every active BLE connection and stop advertising so the host is not
+# connected over both transports at once. Advertising (and reconnection)
+# resumes automatically when USB goes away. Off by default.
+config ZMK_BLE_DISCONNECT_ON_USB_READY
+    bool "Disconnect BLE and stop advertising while USB HID is ready"
+    depends on ZMK_USB && ZMK_BLE
+    default n
+
 # HID GATT notifications sent this way are *not* picked up by Linux, and possibly others.
 config BT_GATT_NOTIFY_MULTIPLE
     default n
