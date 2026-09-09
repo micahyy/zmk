@@ -259,24 +259,29 @@ int zmk_physical_layouts_select_layout(const struct zmk_physical_layout *dest_la
 
     // The kscan device currently driving the matrix (NULL on first init).
     const struct device *old_kscan = (active && active->kscan) ? active->kscan : NULL;
+    // TRUE only when the destination layout is driven by a DIFFERENT kscan
+    // device. When every physical layout shares one chosen kscan (a single
+    // matrix, as on the DZ 87), a layout switch must not touch the kscan at
+    // all: the matrix keeps scanning continuously and reports (row, column);
+    // the row/column -> position conversion below already uses the *new*
+    // active->matrix_transform, so keypress positions follow the new layout
+    // with no hardware action.
+    //
+    // Both kscan power management (PM suspend disconnects every row/column
+    // GPIO) and the disable/enable_callback dance (the interrupt-driven matrix
+    // driver tears down its GPIO interrupt wait and re-arms a full scan) leave
+    // a running shared matrix dead -- USB/BLE stay connected but every key
+    // stops reporting, which is exactly the "freeze when Studio applies a
+    // layout" symptom. So for a shared matrix we skip all of it.
+    bool switched_kscan = (dest_layout->kscan != old_kscan);
 
-    if (old_kscan) {
+    if (old_kscan && switched_kscan) {
         kscan_disable_callback(old_kscan);
-        // Only power-down the old kscan when the destination layout uses a
-        // DIFFERENT kscan device. When all physical layouts share the same
-        // chosen kscan (a single matrix, as on the DZ 87), suspending it on a
-        // layout switch disconnects every row/column GPIO (the matrix driver's
-        // PM suspend action). If the resume does not fully re-arm the pins, the
-        // whole matrix goes dead while USB/BLE stay connected -- exactly the
-        // "freeze after Studio connects/applies a layout" symptom. Keeping the
-        // shared kscan powered across same-matrix layout switches avoids it.
-        if (dest_layout->kscan != old_kscan) {
 #if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME)
-            pm_device_runtime_put(old_kscan);
+        pm_device_runtime_put(old_kscan);
 #elif IS_ENABLED(CONFIG_PM_DEVICE)
-            pm_device_action_run(old_kscan, PM_DEVICE_ACTION_SUSPEND);
+        pm_device_action_run(old_kscan, PM_DEVICE_ACTION_SUSPEND);
 #endif
-        }
     }
 
     int new_idx = get_index_of_layout(dest_layout);
@@ -290,20 +295,16 @@ int zmk_physical_layouts_select_layout(const struct zmk_physical_layout *dest_la
 
     active = dest_layout;
 
-    if (active->kscan) {
-        // Only (re)power the kscan if we actually switched to a different
-        // device; a shared matrix was kept powered above.
-        if (active->kscan != old_kscan) {
+    if (active->kscan && switched_kscan) {
 #if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME)
-            int err = pm_device_runtime_get(active->kscan);
-            if (err < 0) {
-                LOG_WRN("PM runtime get of kscan device to enable it %d", err);
-                return err;
-            }
-#elif IS_ENABLED(CONFIG_PM_DEVICE)
-            pm_device_action_run(active->kscan, PM_DEVICE_ACTION_RESUME);
-#endif
+        int err = pm_device_runtime_get(active->kscan);
+        if (err < 0) {
+            LOG_WRN("PM runtime get of kscan device to enable it %d", err);
+            return err;
         }
+#elif IS_ENABLED(CONFIG_PM_DEVICE)
+        pm_device_action_run(active->kscan, PM_DEVICE_ACTION_RESUME);
+#endif
         kscan_config(active->kscan, zmk_physical_layout_kscan_callback);
         kscan_enable_callback(active->kscan);
     }
