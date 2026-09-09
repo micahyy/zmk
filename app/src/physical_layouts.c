@@ -257,13 +257,24 @@ int zmk_physical_layouts_select_layout(const struct zmk_physical_layout *dest_la
         return 0;
     }
 
-    if (active) {
-        if (active->kscan) {
-            kscan_disable_callback(active->kscan);
+    // The kscan device currently driving the matrix (NULL on first init).
+    const struct device *old_kscan = (active && active->kscan) ? active->kscan : NULL;
+
+    if (old_kscan) {
+        kscan_disable_callback(old_kscan);
+        // Only power-down the old kscan when the destination layout uses a
+        // DIFFERENT kscan device. When all physical layouts share the same
+        // chosen kscan (a single matrix, as on the DZ 87), suspending it on a
+        // layout switch disconnects every row/column GPIO (the matrix driver's
+        // PM suspend action). If the resume does not fully re-arm the pins, the
+        // whole matrix goes dead while USB/BLE stay connected -- exactly the
+        // "freeze after Studio connects/applies a layout" symptom. Keeping the
+        // shared kscan powered across same-matrix layout switches avoids it.
+        if (dest_layout->kscan != old_kscan) {
 #if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME)
-            pm_device_runtime_put(active->kscan);
+            pm_device_runtime_put(old_kscan);
 #elif IS_ENABLED(CONFIG_PM_DEVICE)
-            pm_device_action_run(active->kscan, PM_DEVICE_ACTION_SUSPEND);
+            pm_device_action_run(old_kscan, PM_DEVICE_ACTION_SUSPEND);
 #endif
         }
     }
@@ -280,15 +291,19 @@ int zmk_physical_layouts_select_layout(const struct zmk_physical_layout *dest_la
     active = dest_layout;
 
     if (active->kscan) {
+        // Only (re)power the kscan if we actually switched to a different
+        // device; a shared matrix was kept powered above.
+        if (active->kscan != old_kscan) {
 #if IS_ENABLED(CONFIG_PM_DEVICE_RUNTIME)
-        int err = pm_device_runtime_get(active->kscan);
-        if (err < 0) {
-            LOG_WRN("PM runtime get of kscan device to enable it %d", err);
-            return err;
-        }
+            int err = pm_device_runtime_get(active->kscan);
+            if (err < 0) {
+                LOG_WRN("PM runtime get of kscan device to enable it %d", err);
+                return err;
+            }
 #elif IS_ENABLED(CONFIG_PM_DEVICE)
-        pm_device_action_run(active->kscan, PM_DEVICE_ACTION_RESUME);
+            pm_device_action_run(active->kscan, PM_DEVICE_ACTION_RESUME);
 #endif
+        }
         kscan_config(active->kscan, zmk_physical_layout_kscan_callback);
         kscan_enable_callback(active->kscan);
     }
