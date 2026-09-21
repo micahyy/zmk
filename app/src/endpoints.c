@@ -29,6 +29,12 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 static struct zmk_endpoint_instance current_instance = {};
 static enum zmk_transport preferred_transport =
     ZMK_TRANSPORT_USB; /* Used if multiple endpoints are ready */
+/* Set once the user explicitly picks a transport (OUT_TOG / OUT_USB / OUT_BLE,
+ * or a forced cable-insert selection). Before that we auto-follow whatever is
+ * ready; afterwards the explicit choice is honored even when that transport is
+ * not connected, so e.g. switching to BLE while plugged in stays on BLE while
+ * it advertises/reconnects instead of falling back to USB. */
+static bool user_selected = false;
 
 static void update_current_endpoint(void);
 
@@ -96,6 +102,8 @@ int zmk_endpoint_instance_to_index(struct zmk_endpoint_instance endpoint) {
 
 int zmk_endpoints_select_transport(enum zmk_transport transport) {
     LOG_DBG("Selected endpoint transport %d", transport);
+
+    user_selected = true;
 
     if (preferred_transport == transport) {
         return 0;
@@ -293,8 +301,19 @@ static enum zmk_transport get_selected_transport(void) {
     }
 
     if (is_usb_ready()) {
+        if (user_selected) {
+            LOG_DBG("Only USB is ready, but transport %d was explicitly selected.",
+                    preferred_transport);
+            return preferred_transport;
+        }
+
         LOG_DBG("Only USB is ready.");
         return ZMK_TRANSPORT_USB;
+    }
+
+    if (user_selected) {
+        LOG_DBG("No transports ready, but %d was explicitly selected.", preferred_transport);
+        return preferred_transport;
     }
 
     LOG_DBG("No endpoint transports are ready.");
