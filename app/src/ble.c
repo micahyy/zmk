@@ -637,7 +637,7 @@ static void auth_cancel(struct bt_conn *conn) {
 }
 
 static bool pairing_allowed_for_current_profile(struct bt_conn *conn) {
-    return zmk_ble_active_profile_is_open() ||
+    return zmk_ble_active_profile_is_open() || !zmk_ble_active_profile_is_connected() /* idle channel: a new host may take it over, so a stale/mismatched bond can always be re-paired without reflashing */ ||
            (IS_ENABLED(CONFIG_BT_SMP_ALLOW_UNAUTH_OVERWRITE) &&
             bt_addr_le_cmp(zmk_ble_active_profile_addr(), bt_conn_get_dst(conn)) == 0);
 }
