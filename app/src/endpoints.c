@@ -282,28 +282,26 @@ static bool is_ble_ready(void) {
 }
 
 static enum zmk_transport get_selected_transport(void) {
-    if (is_ble_ready()) {
-        if (is_usb_ready()) {
-            LOG_DBG("Both endpoint transports are ready. Using %d", preferred_transport);
-            return preferred_transport;
-        }
-
-        LOG_DBG("Only BLE is ready.");
+    /* The user's choice wins over "a cable got plugged in": as long as BLE
+     * is the selected output, USB must not steal it back - charging while
+     * typing on another host, or a hub/charger that never enumerates, would
+     * otherwise silently move the output. Switching to USB is explicit
+     * (FN+4 / OUT_USB) and that choice is saved. */
+    if (preferred_transport == ZMK_TRANSPORT_BLE) {
+        LOG_DBG("BLE explicitly selected: staying on BLE (USB ignored).");
         return ZMK_TRANSPORT_BLE;
     }
 
+    /* USB selected: use it while it is a real HID connection, otherwise fall
+     * back to BLE so an unplugged (or charge-only) board still types. */
     if (is_usb_ready()) {
-        // If the user explicitly picked BLE (OUT_TOG/OUT_BLE, saved in
-        // preferred_transport), keep the endpoint on BLE while it advertises
-        // and the host reconnects, instead of snapping straight back to USB.
-        // Every other case still falls through to USB as before.
-        if (preferred_transport == ZMK_TRANSPORT_BLE) {
-            LOG_DBG("Only USB is ready, but BLE was explicitly selected.");
-            return ZMK_TRANSPORT_BLE;
-        }
-
-        LOG_DBG("Only USB is ready.");
+        LOG_DBG("USB selected and ready.");
         return ZMK_TRANSPORT_USB;
+    }
+
+    if (is_ble_ready()) {
+        LOG_DBG("USB selected but not ready, only BLE is ready.");
+        return ZMK_TRANSPORT_BLE;
     }
 
     LOG_DBG("No endpoint transports are ready.");
